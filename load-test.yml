@@ -1,0 +1,35 @@
+config:
+    target: "wss://cxm-ra.cnx1.uk:9008" 
+    payload:
+      # path is relative to the location of the test script
+      path: "users.csv"
+      order: sequence
+      fields:
+        - "id"
+    ensure:
+      maxErrorRate: 1 # fail if error rate exceeds 1%
+      max: 500 # fail if max response time exceeds 500ms
+    socketio:
+      transports: ["websocket"]
+    phases:
+      - duration: 10
+        arrivalRate: 1
+scenarios:
+  - engine: "socketio"
+    flow:
+      - emit:
+          channel: "room"
+          data: '{{ id }}'
+      # - emit:
+      #   channel: "room"
+      #   data: '21f16091-aefd-4bfb-ac7f-0c6f7fe6272f'
+      # - emit:
+      #     channel: "room"
+      #     data: '45fad2d0-1d96-11ea-ac1d-19c28d8b6c3f'
+      # - emit:
+      #     channel: "room"
+      #     data: '460f58f0-1d96-11ea-b372-c74d891843ff'
+      - emit:
+          channel: "agent_preferences"
+          data: '{ "agent_leaderboard_population_preference": "EVERYBODY" }'
+      - think: 5 # do nothing for 5 seconds, then disconnect 
